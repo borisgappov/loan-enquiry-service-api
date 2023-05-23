@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.json",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "declaration": false,
+    "outDir": "../../dist/apps/gateway",
+    "plugins": [
+      {
+        "name": "@nestjs/swagger/plugin",
+        "options": {
+          "dtoFileNameSuffix": [
+            ".entity.ts",
+            ".dto.ts"
+          ],
+          "controllerFileNameSuffix": [
+            ".controller.ts"
+          ]
+        }
+      }
+    ]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}

@@ -1,0 +1,73 @@
+version: '3.8'
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+      target: development
+    command: npm run start:dev gateway
+    env_file:
+      - ./apps/gateway/.env
+    depends_on:
+      - loans
+      - exchange
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+
+  loans:
+    build:
+      context: .
+      dockerfile: ./apps/loans/Dockerfile
+      target: development
+    command: npm run start:dev loans
+    env_file:
+      - ./apps/loans/.env
+    depends_on:
+      - postgres
+      - exchange
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '5001:5001'
+
+  exchange:
+    build:
+      context: .
+      dockerfile: ./apps/exchange/Dockerfile
+      target: development
+    command: npm run start:dev exchange
+    env_file:
+      - ./apps/exchange/.env
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '5002:5002'
+
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: banking
+    restart: unless-stopped
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   ports:
+  #     - "5080:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+      
+  #   restart: unless-stopped
